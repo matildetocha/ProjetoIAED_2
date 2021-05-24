@@ -11,7 +11,7 @@
 #include "proj2.h"
 
 /* Breaks the given input into tokens by spaces with newline. */
-int breakStrInput(char str[MAX], char *v[MAX], int p)
+int breakStrInput(char str[], char *v[], int p)
 {
     char *token;
     int i = 0, n = 0;
@@ -38,12 +38,13 @@ int breakStrInput(char str[MAX], char *v[MAX], int p)
 }
 
 /* Breaks the given path into tokens by slashes with newline. */
-void breakPath(char str[MAX], char *p[MAX])
+void breakPath(char str[], char *p[])
 {
-    char *token;
+    char *token, tmp_str[MAX];
     int i = 0;
 
-    token = strtok(str, SLASH_NEWLINE);
+    strcpy(tmp_str, str);
+    token = strtok(tmp_str, SLASH_NEWLINE);
 
     while (token != NULL)
     {
@@ -54,19 +55,29 @@ void breakPath(char str[MAX], char *p[MAX])
 }
 
 /* Formats a path. */
-void pathFormat(char *p[MAX], char path[MAX])
+void pathFormat(char *p[], char path[])
 {
     int i;
     for (i = 0; p[i] != NULL; i++)
     {
-        strcat(path, p[i]);
         strcat(path, SLASH);
+        strcat(path, p[i]);
     }
 }
 
-void path(char *p, char form_path[MAX])
+void path(char *p, char form_path[])
 {
     char *p_aux[MAX];
     breakPath(p, p_aux);
     pathFormat(p_aux, form_path);
+}
+
+int countsSubPaths(char *p[]) {
+    unsigned i, count = 0;
+
+    for (i = 0; p[i] != NULL; i++) {
+        count++;
+    }
+
+    return count;
 }
