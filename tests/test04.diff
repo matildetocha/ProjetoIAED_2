@@ -1,12 +1,4 @@
-1,7c1,7
-< proj2.c/ resolução
-< README.md/ enunciado
-< Makefile/ construção
-< guidelines.md/ orientações
-< tests/test01.in/ primeiro
-< tests/Makefile/ execução
-< tests/test02.in/ segundo
----
+0a1,7
 > /proj2.c resolução do projeto
 > /README.md enunciado do projeto
 > /tests/Makefile execução dos testes
