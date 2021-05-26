@@ -1,7 +1,7 @@
 /*
  * File: avl_tree.h
  * Author:  Matilde Tocha 99108
- * Description: Header file of AVL Tree Node structure.
+ * Description: Declaration of the functions and struct AVL_Node.
 */
 
 #ifndef AVL_TREE_H
@@ -24,9 +24,7 @@ AVL_Node* rotRL(AVL_Node *h);
 int balance(AVL_Node *h);
 AVL_Node* balanceAVL(AVL_Node *h);
 AVL_Node *insertAVLPath(AVL_Node *h, char *path, char *value);
-AVL_Node *insertAVLValue(AVL_Node *h, char *path, char *value);
 char *searchPath(AVL_Node *h, char *path);
-char *searchValue(AVL_Node *h, char *value);
 AVL_Node *deleteAVLPath(AVL_Node *h, char *path);
 AVL_Node *freeAVL(AVL_Node *h);
 void listsInOrder(AVL_Node *h, char *aux[]);

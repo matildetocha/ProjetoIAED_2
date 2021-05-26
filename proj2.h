@@ -1,13 +1,14 @@
 /*
- * File: defines.h
+ * File: proj2.h
  * Author:  Matilde Tocha 99108
- * Description: Header file of defines for Projeto 2 - IAED 2020/21.
+ * Description: Declaration of the functions used in proj2.c as well as constants.
 */
 
 #ifndef PROJ2_H
 #define PROJ2_H
 
 #include "avl_tree.h"
+#include "hash_table.h"
 
 /* Maximum number of characters for instructions that the system supports. */
 #define MAX 65536
@@ -25,6 +26,7 @@
 /* Command errors */
 #define NOT_FOUND "not found\n"
 #define NO_DATA "no data\n"
+#define NO_MEMORY "No memory\n"
 
 /* Command descriptions*/
 #define HELP_DES "help: Imprime os comandos disponíveis.\n"
@@ -36,9 +38,6 @@
 #define SEARCH_DES "search: Procura o caminho dado um valor.\n"
 #define DELETE_DES "delete: Apaga um caminho e todos os subcaminhos.\n"
 
-#define ORG_PATH 'p'
-#define ORG_VALUE 'v'
-
 /* Delimiters */
 #define NEWLINE "\n"
 #define SPACE " "
@@ -47,10 +46,13 @@
 #define SLASH_NEWLINE "/\n"
 
 void help();
-AVL_Node *set(AVL_Node *avl_head, char *p[], char form_path[], char org);
+AVL_Node *setAVL(AVL_Node *avl_head, char form_path[], char *value);
+Hash_Node **setHash(Hash_Node **hash_heads, char form_path[], char *value);
+Hash_Node *setInsertion(Hash_Node **hash_heads, Hash_Node *insertion, char form_path[]);
 void find(AVL_Node *avl_head, char *p, char form_path[]);
 void list(AVL_Node *avl_head, char *p[], char form_path[]);
 void search(AVL_Node *avl_head, char *value);
-AVL_Node *delete(AVL_Node *avl_head, char *p[], char form_path[]);
+AVL_Node *deleteAVL(AVL_Node *avl_head, char *p[], char form_path[]);
+Hash_Node **deleteHash(Hash_Node **hash_heads, char *p[], char form_path[]);
 
 #endif

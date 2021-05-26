@@ -1,7 +1,7 @@
 /*
  * File: handle_str.h
  * Author:  Matilde Tocha 99108
- * Description: Header file of functions to handle string input.
+ * Description: Declaration of the functions used in handel_str.c.
 */
 
 #ifndef HANDLE_STR_H

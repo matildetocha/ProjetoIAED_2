@@ -54,7 +54,7 @@ void breakPath(char str[], char *p[])
     p[i] = NULL;
 }
 
-/* Formats a path. */
+/* Formats a path with a slash at the beggining of its components/subpaths. */
 void pathFormat(char *p[], char path[])
 {
     int i;
@@ -65,6 +65,7 @@ void pathFormat(char *p[], char path[])
     }
 }
 
+/* Formats a given path, according to its components/subpaths. */
 void path(char *p, char form_path[])
 {
     char *p_aux[MAX];
@@ -72,12 +73,12 @@ void path(char *p, char form_path[])
     pathFormat(p_aux, form_path);
 }
 
+/* Counts the number of components/ subpaths of a path. */
 int countsSubPaths(char *p[]) {
     unsigned i, count = 0;
 
     for (i = 0; p[i] != NULL; i++) {
         count++;
     }
-
     return count;
 }

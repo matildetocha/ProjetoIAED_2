@@ -10,7 +10,9 @@
 
 #include "proj2.h"
 #include "avl_tree.h"
+#include "hash_table.h"
 #include "handle_str.h"
+
 
 /* Prints a list of available commands*/
 void help() {
@@ -18,26 +20,46 @@ void help() {
            FIND_DES, LIST_DES, SEARCH_DES, DELETE_DES);
 }
 
-/* Adds or modifies the value to store. */
-AVL_Node *set(AVL_Node *avl_head, char *p[], char form_path[], char org) {
-    char *p_aux[MAX];
-    
-    memset(form_path, 0, MAX - 1);
-    breakStrInput(p[1], p_aux, 1);
-    path(p_aux[0], form_path);
-
-    switch (org) {
-        case ORG_PATH:
-            avl_head = insertAVLPath(avl_head, form_path, p_aux[1]);
-            break;
-        
-        case ORG_VALUE:
-            avl_head = insertAVLValue(avl_head, form_path, p_aux[1]);
-            break;
-    }
+/* Adds or modifies the value to store in AVL Tree. */
+AVL_Node *setAVL(AVL_Node *avl_head, char form_path[], char *value) {
+    avl_head = insertAVLPath(avl_head, form_path, value);
     return avl_head;
 }
 
+/* Adds or modifies the value to store in Hash Table. */
+Hash_Node **setHash(Hash_Node **hash_heads, char form_path[], char *value) {
+    hash_heads = insertHash(hash_heads, form_path, value);
+    return hash_heads;
+}
+
+/* Adds the father path to the Linked List, to maintain the insertion order. */
+Hash_Node *setInsertion(Hash_Node **hash_heads, Hash_Node *insertion, char form_path[]) {
+    char *aux[MAX];
+
+    breakPath(form_path, aux);
+    if (searchHash(hash_heads, aux[0]) == 0) insertion = insertBeginLL(insertion, aux[0], "nada");
+    return insertion;
+}
+
+/* Prints all of the paths and values stored. */
+void print(Hash_Node **hash_heads, Hash_Node *insertion) {
+    Hash_Node *last;
+    int i;
+
+    if (!hash_heads) {puts("nulo"); return;}
+    while (insertion) {
+            last = insertion;
+            insertion = insertion->next;
+    }
+    while (last) {
+        i = hash(last->path, SIZE_HASH);
+        printPaths(hash_heads[i]);
+        last = last->prev;
+    }
+    return;
+}
+
+/* Prints the stored value of the given path. */
 void find(AVL_Node *avl_head, char *p, char form_path[])
 {
     char *value;
@@ -64,16 +86,8 @@ void list(AVL_Node *avl_head, char *p[], char form_path[]) {
     }
 }
 
-/* Searches for the path, given a value. */
-void search(AVL_Node *avl_head, char *value) {
-    char *form_path;
-    form_path = searchValue(avl_head, value);
-    if (!form_path) return;
-    printf("%s\n", form_path);
-} 
-
-/* Deletes all paths from a sub-path. */
-AVL_Node *delete(AVL_Node *avl_head, char *p[], char form_path[]) {
+/* Deletes all paths from a sub-path in AVL Tree. */
+AVL_Node *deleteAVL(AVL_Node *avl_head, char *p[], char form_path[]) {
     if (!p[1]) {
         avl_head = freeAVL(avl_head);
         return avl_head;
@@ -85,10 +99,26 @@ AVL_Node *delete(AVL_Node *avl_head, char *p[], char form_path[]) {
     }
 }
 
+/* Deletes all paths from a sub-path in Hash Table. */
+Hash_Node **deleteHash(Hash_Node **hash_heads, char *p[], char form_path[]) {
+    if (!p[1]) {
+        hash_heads = freeHash(hash_heads);
+        return hash_heads;
+    }
+    else {
+        path(p[1], form_path);
+        hash_heads = deleteHashPath(hash_heads, form_path);
+        return hash_heads;
+    }
+}
+
 /* Makes the program run as commands are entered. */
 int main() {
-    char str[MAX], form_path[MAX], *p[MAX];
+    char str[MAX], form_path[MAX], *p[MAX], *aux[MAX];
     AVL_Node *avlpath_head = NULL;
+    Hash_Node **hash_heads = NULL, *insertion = NULL;
+
+    hash_heads = hashInit(hash_heads, SIZE_HASH);
 
     for (;;) {
         memset(str, 0, MAX - 1);
@@ -104,24 +134,34 @@ int main() {
 
         else if (strcmp(p[0], QUIT) == 0) {
             freeAVL(avlpath_head);
+            freeHash(hash_heads);
+            freeInsertion(insertion);
             exit(EXIT_SUCCESS); 
         }
 
         else if (strcmp(p[0], SET) == 0) {
-            avlpath_head = set(avlpath_head, p, form_path, ORG_PATH);
-            /* avlvalue_head = set(avlvalue_head, p, form_path, ORG_PATH) */;
+            breakStrInput(p[1], aux, 1);
+            path(aux[0], form_path);
+
+            avlpath_head = setAVL(avlpath_head, form_path, aux[1]);
+            hash_heads = setHash(hash_heads, form_path, aux[1]);
+            insertion = setInsertion(hash_heads, insertion, form_path);
         }
-        else if (strcmp(p[0], PRINT) == 0)
-            exit(EXIT_SUCCESS);
+
+        else if (strcmp(p[0], PRINT) == 0) 
+            print(hash_heads, insertion);
+            
         else if (strcmp(p[0], FIND) == 0)
             find(avlpath_head, p[1], form_path);
 
         else if (strcmp(p[0], LIST) == 0)
             list(avlpath_head, p, form_path);
         
-        else if (strcmp(p[0], SEARCH) == 0)
-            exit(EXIT_SUCCESS);
-        else if (strcmp(p[0], DELETE) == 0)
-            avlpath_head = delete(avlpath_head, p, form_path);
+        else if (strcmp(p[0], SEARCH) == 0) {}
+
+        else if (strcmp(p[0], DELETE) == 0) {
+            avlpath_head = deleteAVL(avlpath_head, p, form_path);
+            hash_heads = deleteHash(hash_heads, p, form_path);
+        }
     }
 }

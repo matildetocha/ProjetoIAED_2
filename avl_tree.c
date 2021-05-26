@@ -1,8 +1,8 @@
 /*
  * File: avl_tree.c
  * Author:  Matilde Tocha 99108
- * Description: Functions to crate, insert, search, delete and print a node
- * in an AVL tree.
+ * Description: Functions to create, insert, search and delete a node
+ * in an AVL tree as well as print all nodes in alphabetical order.
 */
 
 #include <stdio.h>
@@ -17,8 +17,11 @@
 right pointers. */
 AVL_Node *newAVL(char *path, char *value) {
     AVL_Node *h = (AVL_Node*) malloc(sizeof(AVL_Node)); 
+    if (!h) puts(NO_MEMORY);
     h->path = (char*) malloc(sizeof(char) * (strlen(path) + 1)); 
+    if (!h->path) puts(NO_MEMORY);
     h->value = (char*) malloc(sizeof(char) * (strlen(value) + 1)); 
+    if (!h->value) puts(NO_MEMORY);
     
     strcpy(h->path, path);
     strcpy(h->value, value);
@@ -86,6 +89,7 @@ int balance(AVL_Node *h) {
     return height(h->l) - height(h->r);
 }
 
+/* Balances the AVL Tee if it is unbalanced. */
 AVL_Node *balanceAVL(AVL_Node *h) {
     int balanceFactor;
     if (!h)
@@ -132,26 +136,13 @@ AVL_Node *insertAVLPath(AVL_Node *h, char *path, char *value) {
     return h;
 }
 
-AVL_Node *insertAVLValue(AVL_Node *h, char *path, char *value) {
-    if (!h) 
-        return newAVL(path, value);
-
-    if (strcmp(value, h->value) < 0)
-        h->l = insertAVLValue(h->l, path, value);
-
-    else if (strcmp(value, h->value) > 0)
-        h->r = insertAVLValue(h->r, path, value);
-
-    h = balanceAVL(h);
-
-    return h;
-}
-
+/* Returns the maximum node in the avl tree, considering that it is organized by paths. */
 AVL_Node *max(AVL_Node *h) {
     if (!h || !h->r) return h;
     else return max(h->r);
 }
 
+/* Removes the node where the given path is stored from the AVL Tree. */
 AVL_Node *deleteAVLPath(AVL_Node *h, char *path) {
     if (!h) {
         printf(NOT_FOUND);
@@ -180,6 +171,7 @@ AVL_Node *deleteAVLPath(AVL_Node *h, char *path) {
     return h;
 }
 
+/* Removes all of the AVL Tree Nodes. */
 AVL_Node *freeAVL(AVL_Node *h) {
     if (!h) return h;
     h->l = freeAVL(h->l);
@@ -187,6 +179,7 @@ AVL_Node *freeAVL(AVL_Node *h) {
     return deleteAVLPath(h, h->path);
 }
 
+/* Searches for the stored value in the AVL Tree, given the path. */
 char *searchPath(AVL_Node *h, char *path) {
     if (!h) {
         printf(NOT_FOUND);
@@ -208,21 +201,7 @@ char *searchPath(AVL_Node *h, char *path) {
         return searchPath(h->r, path);
 }
 
-char *searchValue(AVL_Node *h, char *value) {
-    if (!h) {
-        printf(NOT_FOUND);
-        return NULL;
-    }
-    if (strcmp(value, h->value) == 0) {
-        if (h->path)
-            return h->path;
-    }
-    if (strcmp(value, h->value) < 0) 
-        return searchValue(h->l, value);
-    else 
-        return searchValue(h->r, value);
-}
-
+/* Prints in alphabetical order all AVL Tree components of the root. */
 void listsInOrder(AVL_Node *h, char *aux[]) {
     static char prev[MAX]; 
     if (h) {
@@ -238,6 +217,7 @@ void listsInOrder(AVL_Node *h, char *aux[]) {
     }
 }
 
+/* Prints in alphabetical order all of the immediate components of the given path. */
 int listsPathInOrder(AVL_Node *h, char *path, char *aux[]) {
     static int i, found = 0;
     static char prev[MAX]; 
