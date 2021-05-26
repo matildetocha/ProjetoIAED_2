@@ -33,6 +33,14 @@ LL_Node *insertEndLL(LL_Node *head, char *name)
     return head;
 }
 
+LL_Node *searchLL(LL_Node *head, char *text) {
+    LL_Node *tmp_head;
+    for(tmp_head = head; tmp_head != NULL; tmp_head = tmp_head->next)
+    if(strcmp(t->text, text) == 0)
+        return t;
+    return NULL;
+}
+
 /* Prints contents of linked list starting from the given node */
 void printList(LL_Node *head)
 {
@@ -63,4 +71,22 @@ void FREEnode(LL_Node *head)
 {
     free(head->name);
     free(head);
+}
+
+
+void searchPathLL(Hash_Node *head, char *value)
+{
+    Hash_Node *t;
+    for(t = head; t != NULL; t = t->prev) {
+        
+        if(strcmp(t->value, value) == 0)
+            printf("%s\n", t->path);
+    }
+    return ;
+}
+
+void searchHash(Hash_Node **hash_heads, char *value) {
+    int i = hash(path, SIZE_HASH);
+    searchValueLL(hash_heads[i], value);
+    return;
 }
